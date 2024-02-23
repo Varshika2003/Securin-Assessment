@@ -1,0 +1,64 @@
+import itertools
+
+def combinatinos_a(arr, sides):
+  """
+  Generates all possible combinations of `sides` elements from `arr`.
+  """
+  return list(itertools.product(arr, repeat=sides))
+
+def combinatinos_b(arr, sides):
+  """
+  Generates all possible combinations of `sides` elements from `arr`.
+  """
+  result = []
+  for i in range(1 << len(arr)):
+    temp = [arr[j] for j in range(len(arr)) if i & (1 << j)]
+    if len(temp) == sides:
+      result.append(temp)
+  return result
+
+def find_probabilities(dice_a, dice_b):
+  """
+  Calculates the probabilities of each possible sum from rolling two dice.
+  """
+  probabilities = {}
+  for num1 in dice_a:
+    for num2 in dice_b:
+      sum = num1 + num2
+      probabilities[sum] = probabilities.get(sum, 0) + 1
+  total_combinations = len(dice_a) * len(dice_b)
+  for sum in probabilities:
+    probabilities[sum] /= total_combinations
+  return probabilities
+
+def check_maps(possibles_a, possibles_b, map_probabilities):
+  """
+  Checks if the generated probabilities from the two lists match the given map.
+  """
+  generated_probability = find_probabilities(possibles_a, possibles_b)
+  return generated_probability == map_probabilities
+
+def main():
+  num1 = [1, 2, 3, 4]
+  num2 = [1, 2, 3, 4, 5, 6, 7, 8]
+  sides = 6
+  dice_a = [1, 2, 3, 4, 5, 6]
+  dice_b = [1, 2, 3, 4, 5, 6]
+  map_probabilities = find_probabilities(dice_a, dice_b)
+
+  possibles_a = combinatinos_a(num1, sides)
+  possibles_b = combinatinos_b(num2, sides)
+
+  flag = False
+  for p1 in possibles_a:
+    for p2 in possibles_b:
+      if check_maps(p1, p2, map_probabilities):
+        print("Transformed Dice A:", p1)
+        print("Transformed Dice B:", p2)
+        flag = True
+        break
+    if flag:
+      break
+
+if __name__ == "__main__":
+  main()
