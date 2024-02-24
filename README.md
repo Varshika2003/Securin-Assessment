@@ -1,3 +1,1 @@
 # Securin-Assessment
-
-logic
